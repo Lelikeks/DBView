@@ -1,0 +1,70 @@
+﻿<Window x:Class="DBView.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DBView"
+        mc:Ignorable="d"
+        Loaded="MainWindow_OnLoaded"
+        Closed="MainWindow_OnClosed"
+        Title="DBView">
+
+    <Window.DataContext>
+        <local:MainViewModel/>
+    </Window.DataContext>
+    
+    <Grid Margin="4">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" MinWidth="250"/>
+            <ColumnDefinition Width="Auto" MinWidth="250"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <StackPanel Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Orientation="Horizontal">
+            <TextBlock>Connection String:</TextBlock>
+            <ComboBox Text="{Binding ConnectionString, UpdateSourceTrigger=LostFocus}" ItemsSource="{Binding SavedConnectionStrings}" IsEditable="True" MinWidth="200" Margin="4,0,0,0"/>
+            <Button Command="{Binding ShowCommand}" Margin="4,0,0,0" Padding="20,0">Show</Button>
+        </StackPanel>
+
+        <ListView Grid.Row="1" Grid.Column="0" ItemsSource="{Binding Tables}" DisplayMemberPath="Name" SelectedItem="{Binding SelectedTable}" Margin="0,4,0,0">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn DisplayMemberBinding="{Binding Name}" Header="Table"/>
+                </GridView>
+            </ListView.View>
+        </ListView>
+        
+        <Grid Grid.Row="1" Grid.Column="1" Margin="4,4,0,0">
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+
+            <ListView Grid.Row="0" ItemsSource="{Binding Columns}" SelectedItem="{Binding SelectedColumn}" HorizontalContentAlignment="Stretch">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn DisplayMemberBinding="{Binding Name}" Header="Column Name"/>
+                        <GridViewColumn DisplayMemberBinding="{Binding DataType}" Header="Data Type"/>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+            <ListView Grid.Row="1" ItemsSource="{Binding ColumnValues}" SelectedItem="{Binding SelectedValue}" HorizontalContentAlignment="Stretch" Margin="0,4,0,0">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn DisplayMemberBinding="{Binding Value}" Header="Value"/>
+                        <GridViewColumn DisplayMemberBinding="{Binding Count}" Header="Rows Count"/>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+        </Grid>
+        
+        <DataGrid Grid.Row="1" Grid.Column="2" ItemsSource="{Binding Data}" IsReadOnly="True" Margin="4,4,0,0"
+            CopyingRowClipboardContent="DataGrid_OnCopyingRowClipboardContent"/>
+    </Grid>
+
+</Window>
